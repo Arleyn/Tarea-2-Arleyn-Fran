@@ -68,7 +68,62 @@ class Test(unittest.TestCase):
         tiempo = [datetime.datetime(2015,4,21,16,0,0),
                                     datetime.datetime(2015,4,21,17,1,0)];
         
-        self.assertEqual(10,CalculaTarifas.calcularPrecio(tarifa,tiempo))        
+        self.assertEqual(10,CalculaTarifas.calcularPrecio(tarifa,tiempo))    
+        
+    # Prueba de 1 hora exacta
+        
+    def test1horaexacta(self):
+        
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,21,16,0,0),
+                                    datetime.datetime(2015,4,21,17,0,0)];
+        
+        self.assertEqual(5,CalculaTarifas.calcularPrecio(tarifa,tiempo))
+        
+    # Prueba de 23 horas 
+
+    def test23horasexacta(self):
+        
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,21,16,0,0),
+                                    datetime.datetime(2015,4,22,15,0,0)];
+        
+        self.assertEqual(115,CalculaTarifas.calcularPrecio(tarifa,tiempo))        
+        
+    # Prueba de 1 dia exacto
+        
+    def test1diaexacto(self):
+        
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,21,16,0,0),
+                                    datetime.datetime(2015,4,22,16,0,0)];
+        
+        self.assertEqual(120,CalculaTarifas.calcularPrecio(tarifa,tiempo))   
+        
+    # Prueba de Limite Frontera 7 dias Exactos
+        
+    def test7dias(self):
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,21,16,0,0),
+                                    datetime.datetime(2015,4,28,16,0,0)];
+        
+        self.assertEqual(1080,CalculaTarifas.calcularPrecio(tarifa,tiempo)) 
+        
+    # Test Menos de 15 min
+        
+    def testMenos15Min(self):
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,21,16,0,0),
+                                    datetime.datetime(2015,4,21,14,59,0)];
+        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo))
+        
+    # Test Mas de 7 dias
+    
+    def testMas7Dias(self):
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,20,0,0,0),
+                                    datetime.datetime(2015,4,28,0,1,0)];
+        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo))            
     
 if __name__ == "__main__":
 #import sys;sys.argv = ['', 'Test.testName']
