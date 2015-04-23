@@ -7,6 +7,7 @@ Created on 22/4/2015
 
 import unittest
 import datetime
+from decimal import Decimal
 import CalculaTarifas
 
 class Test(unittest.TestCase):
@@ -123,7 +124,37 @@ class Test(unittest.TestCase):
         tarifa = CalculaTarifas.Tarifa(5,10);
         tiempo = [datetime.datetime(2015,4,20,0,0,0),
                                     datetime.datetime(2015,4,28,0,1,0)];
-        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo))            
+        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo))    
+        
+    # Test tarifa Negativa
+    
+    def testTarifaNegativa(self):
+        tarifa = CalculaTarifas.Tarifa(-5,-10);
+        tiempo = [datetime.datetime(2015,4,20,0,0,0),
+                                    datetime.datetime(2015,4,28,0,1,0)];
+        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo))
+
+    # Fin de reservacion mayor a inicio de reservacion
+    
+    def testFechas(self):
+        tarifa = CalculaTarifas.Tarifa(5,10);
+        tiempo = [datetime.datetime(2015,4,20,0,0,0),
+                                    datetime.datetime(2015,4,19,0,0,0)];
+        self.assertRaises(Exception,lambda: CalculaTarifas.calcularPrecio(tarifa,tiempo)) 
+        
+    # Las tarifas son decimales
+    
+    def testTarifaDecimal(self):
+        tarifa = CalculaTarifas.Tarifa(0.1,2);
+        tiempo = [datetime.datetime(2015,4,21,0,0,0),
+                                    datetime.datetime(2015,4,21,1,15,0)];
+        self.assertAlmostEqual(Decimal(0.20),CalculaTarifas.calcularPrecio(tarifa,tiempo))
+        
+    def testTarifaDecimaltotalentero(self):
+        tarifa = CalculaTarifas.Tarifa(0.5,2);
+        tiempo = [datetime.datetime(2015,4,21,0,0,0),
+                                    datetime.datetime(2015,4,21,1,15,0)];
+        self.assertEqual(1,CalculaTarifas.calcularPrecio(tarifa,tiempo))           
     
 if __name__ == "__main__":
 #import sys;sys.argv = ['', 'Test.testName']
